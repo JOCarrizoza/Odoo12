@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="point_of_sale.template" xml:space="preserve">
+    <t t-extend="ClientLine">
+        <!-- Heredar estos 3  de POS.xml
+        <t t-name="ClientLine">
+        <t t-name="ClientDetailsEdit">
+        <t t-name="ClientDetails"> -->
+        <t t-jquery='.client-line' t-operation='replace'>
+            <tr class='client-line' t-att-data-id='partner.id'>
+                <td><t t-esc='partner.name' /></td>
+                <td><t t-esc='partner.phone or partner.mobile or ""' /></td>
+                <td><t t-esc='partner.car_brand or ""' /></td>
+                <td><t t-esc='partner.car_plates or ""' /></td>
+            </tr>            
+        </t>
+    </t>
+
+    <t t-extend="ClientDetailsEdit">
+        <t t-jquery='.client-details-box' t-operation='replace'>
+            <div class='client-details-box clearfix'>
+                <div class='client-details-left'>                  
+                    <div class='client-detail'>
+                        <span class='label'>Car Plates</span>
+                        <input class='detail client-plates' name='car_plates' t-att-value='partner.car_plates || ""' placeholder='Car plates'></input>
+                    </div>
+                    <div class='client-detail'>
+                        <span class='label'> Car Brand</span>
+                        <select class='detail client-brand needsclick' name='car_brand'>
+                            <option value=''>None</option>
+                            <t t-foreach='widget.pos.car_brands' t-as='brand'>
+                                <option t-att-value='brand.id' t-att-selected="partner.car_brand ? ((brand.id === partner.car_brand[0]) ? true : undefined) : undefined">
+                                    <t t-esc='brand.name'/>
+                                </option>
+                            </t>
+                        </select>
+                    </div>
+                    <div class='client-detail'>
+                        <span class='label'> Car Model</span>
+                        <select class='detail client-model needsclick' name='car_model'>
+                            <option value=''>None</option>
+                            <t t-foreach='widget.pos.car_models' t-as='model'>
+                                <option t-att-value='model.id' t-att-selected="partner.car_model ? ((model.id === partner.car_model[0]) ? true : undefined) : undefined">
+                                    <t t-esc='model.name'/>
+                                </option>
+                            </t>
+                        </select>
+                    </div>
+                    <div class='client-detail'>
+                        <span class='label'>Car Year</span>
+                        <input class='detail client-year' name='car_year' t-att-value='partner.car_year || ""' placeholder='Car Year'></input>
+                    </div>
+                    <div class='client-detail'>
+                        <span class='label'>Phone</span>
+                        <input class='detail client-phone'  name='phone'    type='tel'      t-att-value='partner.phone || ""'></input>
+                    </div>
+                </div>
+                <div class='client-details-right'>
+                    <div class='client-detail'>
+                        <span class='label'>Email</span>
+                        <input class='detail client-email'  name='email'    type='email'    t-att-value='partner.email || ""'></input>
+                    </div>
+                    <div class='client-detail'>
+                        <span class='label'>Street</span>
+                        <input class='detail client-address-street' name='street'       t-att-value='partner.street || ""' placeholder='Street'></input>
+                    </div>                    
+                    <div class='client-detail'>
+                        <span class='label'>City</span>
+                        <input class='detail client-address-city'   name='city'         t-att-value='partner.city || ""' placeholder='City'></input>
+                    </div>
+                    <div class='client-detail'>
+                        <span class='label'>Postcode</span>
+                        <input class='detail client-address-zip'    name='zip'          t-att-value='partner.zip || ""' placeholder='ZIP'></input>
+                    </div>
+                    <div class='client-detail'>
+                        <span class='label'>Country</span>
+                        <select class='detail client-address-country needsclick' name='country_id'>
+                            <option value=''>None</option>
+                            <t t-foreach='widget.pos.countries' t-as='country'>
+                                <option t-att-value='country.id' t-att-selected="partner.country_id ? ((country.id === partner.country_id[0]) ? true : undefined) : undefined">
+                                    <t t-esc='country.name'/>
+                                </option>
+                            </t>
+                        </select>
+                    </div>
+                    <div t-attf-class='client-detail #{widget.pos.pricelists.length &lt;= 1 ? "oe_hidden" : ""}'>
+                        <span class='label'>Pricelist</span>
+                        <select class='detail needsclick' name='property_product_pricelist'>
+                            <t t-foreach='widget.pos.pricelists' t-as='pricelist'>
+                                <option t-att-value='pricelist.id'
+                                        t-att-selected="partner.property_product_pricelist ? (pricelist.id === partner.property_product_pricelist[0] ? true : undefined) : undefined">
+                                    <t t-esc='pricelist.display_name'/>
+                                </option>
+                            </t>
+                        </select>
+                    </div>
+                </div>
+            </div>            
+        </t>
+    </t>
+
+    <t t-extend="ClientDetails">
+        <t t-jquery='.client-details-box' t-operation='replace'>
+            <div class='client-details-box clearfix'>
+                <div class='client-details-left'>
+                    <div class='client-detail'>
+                        <span class='label'>Car_Brand</span>
+                        <t t-if='partner.car_brand'>
+                            <span class='detail client-brand'><t t-esc='partner.car_brand' /></span>
+                        </t>
+                        <t t-if='!partner.car_brand'>
+                            <span class='detail client-brand empty'>N/A</span>
+                        </t>
+                    </div>
+                    <div class='client-detail'>
+                        <span class='label'>Car Model</span>
+                        <t t-if='partner.car_model'>
+                            <span class='detail client-model'><t t-esc='partner.car_model' /></span>
+                        </t>
+                        <t t-if='!partner.car_model'>
+                            <span class='detail client-model empty'>N/A</span>
+                        </t>
+                    </div>
+                    <div class='client-detail'>
+                        <span class='label'>Car color</span>
+                        <t t-if='partner.car_color'>
+                            <span class='detail client-color'><t t-esc='partner.car_color' /></span>
+                        </t>
+                        <t t-if='!partner.car_color'>
+                            <span class='detail client-color empty'>N/A</span>
+                        </t>
+                    </div>
+                    <div class='client-detail'>
+                        <span class='label'>Car Plates</span>
+                        <t t-if='partner.car_plates'>
+                            <span class='detail client-plates'><t t-esc='partner.car_plates' /></span>
+                        </t>
+                        <t t-if='!partner.car_plates'>
+                            <span class='detail client-plates empty'>N/A</span>
+                        </t>
+                    </div>
+                </div>
+                <div class='client-details-right'>
+                    <div class='client-detail'>
+                        <span class='label'>Phone</span>
+                        <t t-if='partner.phone'>
+                            <span class='detail client-phone'><t t-esc='partner.phone' /></span>
+                        </t>
+                        <t t-if='!partner.phone'>
+                            <span class='detail client-phone empty'>N/A</span>
+                        </t>
+                    </div>
+                    <div class='client-detail'>
+                        <span class='label'>Address</span>
+                        <t t-if='partner.address'>
+                            <span class='detail client-address'><t t-esc='partner.address' /></span>
+                        </t>
+                        <t t-if='!partner.address'>
+                            <span class='detail client-address empty'>N/A</span>
+                        </t>
+                    </div>
+                    <div class='client-detail'>
+                        <span class='label'>Email</span>
+                        <t t-if='partner.email'>
+                            <span class='detail client-email'><t t-esc='partner.email' /></span>
+                        </t>
+                        <t t-if='!partner.email'>
+                            <span class='detail client-email empty'>N/A</span>
+                        </t>
+                    </div>
+                    <div t-attf-class='client-detail #{widget.pos.pricelists.length &lt;= 1 ? "oe_hidden" : ""}'>
+                        <span class='label'>Pricelist</span>
+                        <t t-if='partner.property_product_pricelist'>
+                            <span class='detail property_product_pricelist'><t t-esc='partner.property_product_pricelist[1]'/></span>
+                        </t>
+                        <t t-if='!partner.property_product_pricelist'>
+                            <span class='detail property_product_pricelist empty'>N/A</span>
+                        </t>
+                    </div>
+                </div>
+            </div>          
+        </t>
+    </t>
+
+    <t t-extend="ClientListScreenWidget">
+        <t t-jquery='.client-list' t-operation='replace'>
+            <table class='client-list'>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Phone</th>
+                        <th>Car Brand</th>
+                        <th>Car Plates</th>
+                    </tr>
+                </thead>
+                <tbody class='client-list-contents'>
+                </tbody>
+            </table>            
+        </t>
+    </t>
+
+</templates>

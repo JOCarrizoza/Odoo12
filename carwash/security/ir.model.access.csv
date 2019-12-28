@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_car_brands,Car Brands Security,model_car_brands,,1,1,1,1
+access_car_color,Car Color Security,model_car_colors,,1,1,1,1
+access_car_models, Car Models Security,model_car_models,base.group_user,1,1,1,1
